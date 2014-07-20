@@ -178,11 +178,12 @@ namespace StarSystems
                 }
                 try
                 {
-                    StarClass.orbitColor = ConfigNode.ParseColor(star.GetNode("Orbit").GetValue("orbitColor"));
+                    StarClass.orbitColor = ConfigNode.ParseColor(star.GetNode("Orbit").GetValue("orbitColor").Replace("(", "").Replace(")", ""));
                 }
                 catch (Exception e)
                 {
-                    StarClass.orbitColor = new Color(0.5f,0.5f,0.5f,1f);
+                    //StarClass.orbitColor = new Color(0.5f,0.5f,0.5f,1f);
+                    Debug.Log("No orbit color found, using default");
                 }				
 
                 StarDict[StarClass.name] = StarClass;
@@ -208,11 +209,12 @@ namespace StarSystems
             Kerbol.epoch = 0;
             try
             {
-                Kerbol.orbitColor = ConfigNode.ParseColor(ConfigNode.Load("GameData/StarSystems/Configdata/StarNames.cfg").GetNode("Kerbol").GetValue("orbitColor"));
+                Kerbol.orbitColor = ConfigNode.ParseColor(ConfigNode.Load("GameData/StarSystems/Configdata/StarNames.cfg").GetNode("Kerbol").GetValue("orbitColor").Replace("(", "").Replace(")", ""));
             }
             catch
             {
-                Kerbol.orbitColor = new Color(1f, 1f, 0f, 1f);
+                //Kerbol.orbitColor = new Color(1f, 1f, 0f, 1f);
+                Debug.Log("No orbit color found, using default");
             }
 
             Kerbol.Mass = 1.7565670E28;
