@@ -4,246 +4,133 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using StarSystems.Data;
+using StarSystems.Utils;
 using UnityEngine;
 
 namespace StarSystems
 {
-    class StarSystem
+    public class StarSystem : MonoBehaviour
     {
         public static Dictionary<string, CelestialBody> CBDict = new Dictionary<string, CelestialBody>();
         public static Dictionary<string, Transform> TFDict = new Dictionary<string, Transform>();
-        private static Dictionary<string, StarInfo> StarDict = new Dictionary<string, StarInfo>();
-        private static List<string> StandardPlanets = new List<string> { "Moho", "Eve", "Kerbin", "Duna", "Dres", "Jool", "Eeloo" };
+        private static Dictionary<string, StarSystemDefintion> StarDict = new Dictionary<string, StarSystemDefintion>();
+
+        private static List<string> StandardPlanets = new List<string>
+        {
+            "Moho",
+            "Eve",
+            "Kerbin",
+            "Duna",
+            "Dres",
+            "Jool",
+            "Eeloo"
+        };
+
         private ConfigNode StarNames;
+        private KspSystemDefinition kspSystemDefinition;
         public static bool Initialized = false;
 
         private void Awake()
         {
             DontDestroyOnLoad(this);
         }
+
         private void Start()
         {
-            //Set config file location
-            StarNames = ConfigNode.Load("GameData/StarSystems/Configdata/StarNames.cfg");
-
-            Debug.Log("Reading star info...");
-
-            //Grab star info
-            foreach (var star in StarNames.GetNodes("Star"))
+            if (ConfigSolarNodes.Instance.IsValid("system"))
             {
-                var StarClass = new StarInfo();
+                kspSystemDefinition = ConfigSolarNodes.Instance.GetConfigData();
+                //Load Kerbol
+                var Kerbol = new StarSystemDefintion();
+                Kerbol.name = "Kerbol";
+                Kerbol.inclination = 0;
+                Kerbol.eccentricity = 0;
+                Kerbol.semiMajorAxis = kspSystemDefinition.SemiMajorAxis;
+                Kerbol.LAN = 0;
+                Kerbol.argumentOfPeriapsis = 0;
+                Kerbol.meanAnomalyAtEpoch = 0;
+                Kerbol.epoch = 0;
+                Kerbol.Mass = 1.7565670E28;
+                Kerbol.Radius = 261600000d;
+                Kerbol.flightGlobalsIndex = 0;
+                Kerbol.StarColor = PlanetColor.Yellow;
+                Kerbol.ScienceMultiplier = 1f;
+                Kerbol.BodyDescription =
+                    "The Sun is the most well known object in the daytime sky. Scientists have noted a particular burning sensation and potential loss of vision if it is stared at for long periods of time. This is especially important to keep in mind considering the effect shiny objects have on the average Kerbal.";
+                kspSystemDefinition.Stars.Add(Kerbol);
 
-                try
-                {
-                    StarClass.name = star.GetNode("CelestialBody").GetValue("name");
-                }
-                catch (Exception e)
-                {
-                    Debug.Log("No star name found, can't create star");
-                    continue;
-                }
-
-                try
-                {
-                    StarClass.BodyDescription = star.GetNode("CelestialBody").GetValue("BodyDescription");
-                }
-                catch (Exception e)
-                {
-
-                }
-                try
-                {
-                    StarClass.flightGlobalsIndex = int.Parse(star.GetNode("CelestialBody").GetValue("flightGlobalIndex"));
-                }
-                catch (Exception e)
-                {
-                    Debug.Log("No flightGlobalIndex found, can't create star");
-                    continue;
-                }
-                try
-                {
-                    StarClass.StarColor = star.GetNode("CelestialBody").GetValue("StarColor");
-                }
-                catch (Exception e)
-                {
-                    StarClass.StarColor = "Yellow";
-                }
-                try
-                {
-                    StarClass.Mass = double.Parse(star.GetNode("CelestialBody").GetValue("Mass"));
-                }
-                catch (Exception e)
-                {
-                    StarClass.Mass = 1.7565670E28;
-                }
-                try
-                {
-                    StarClass.Radius = double.Parse(star.GetNode("CelestialBody").GetValue("Radius"));
-                }
-                catch (Exception e)
-                {
-                    StarClass.Radius = 261600000;
-                }
-                try
-                {
-                    StarClass.ScienceMultiplier = float.Parse(star.GetNode("CelestialBody").GetValue("ScienceMultiplier"));
-                }
-                catch (Exception e)
-                {
-                    StarClass.ScienceMultiplier = 10f;
-                }
-                try
-                {
-                    StarClass.inclination = double.Parse(star.GetNode("Orbit").GetValue("inclination"));
-                }
-                catch (Exception e)
-                {
-                    StarClass.inclination = 0;
-                }
-                try
-                {
-                    StarClass.eccentricity = double.Parse(star.GetNode("Orbit").GetValue("eccentricity"));
-                }
-                catch (Exception e)
-                {
-                    StarClass.eccentricity = 0;
-                }
-                try
-                {
-                    StarClass.semiMajorAxis = double.Parse(star.GetNode("Orbit").GetValue("semiMajorAxis"));
-                }
-                catch (Exception e)
-                {
-                    Debug.Log("No semiMajorAxis found, can't create star");
-                    continue;
-                }
-                try
-                {
-                    StarClass.LAN = double.Parse(star.GetNode("Orbit").GetValue("LAN"));
-                }
-                catch (Exception e)
-                {
-                    StarClass.LAN = 0;
-                }
-                try
-                {
-                    StarClass.argumentOfPeriapsis = double.Parse(star.GetNode("Orbit").GetValue("argumentOfPeriapsis"));
-                }
-                catch (Exception e)
-                {
-                    StarClass.LAN = 0;
-                }
-                try
-                {
-                    StarClass.meanAnomalyAtEpoch = double.Parse(star.GetNode("Orbit").GetValue("meanAnomalyAtEpoch"));
-                }
-                catch (Exception e)
-                {
-                    StarClass.meanAnomalyAtEpoch = 0;
-                }
-                try
-                {
-                    StarClass.epoch = double.Parse(star.GetNode("Orbit").GetValue("epoch"));
-                }
-                catch (Exception e)
-                {
-                    StarClass.epoch = 0;
-                }
-
-                StarDict[StarClass.name] = StarClass;
+                Debug.Log("Starinfo loaded");
             }
-
-            //Load Kerbol
-            var Kerbol = new StarInfo();
-            Kerbol.name = "Kerbol";
-
-            Kerbol.inclination = 0;
-            Kerbol.eccentricity = 0;
-            try
+            else
             {
-                Kerbol.semiMajorAxis = double.Parse(ConfigNode.Load("GameData/StarSystems/Configdata/StarNames.cfg").GetNode("Kerbol").GetValue("semiMajorAxis"));
+
+                //kill the mod for bad config
+                Debug.Log("Config for ksp Mod stoped working");
+                kspSystemDefinition = null;
             }
-            catch
-            {
-                Kerbol.semiMajorAxis = 4500000000000;
-            }
-            Kerbol.LAN = 0;
-            Kerbol.argumentOfPeriapsis = 0;
-            Kerbol.meanAnomalyAtEpoch = 0;
-            Kerbol.epoch = 0;
-
-            Kerbol.Mass = 1.7565670E28;
-            Kerbol.Radius = 261600000d;
-
-            Kerbol.flightGlobalsIndex = 0;
-            Kerbol.StarColor = "Yellow";
-            Kerbol.ScienceMultiplier = 1f;
-
-            Kerbol.BodyDescription = "The Sun is the most well known object in the daytime sky. Scientists have noted a particular burning sensation and potential loss of vision if it is stared at for long periods of time. This is especially important to keep in mind considering the effect shiny objects have on the average Kerbal.";
-
-            StarDict["Kerbol"] = Kerbol;
-
-            Debug.Log("Starinfo loaded");
 
         }
+
         public void OnLevelWasLoaded(int level)
         {
-
-            Debug.Log("Level: " + level);
-
-            if (level == 10)
+            if (kspSystemDefinition != null)
             {
-                //Set max zoom
-                PlanetariumCamera.fetch.maxDistance = 5000000000;
+                Debug.Log("Level: " + level);
 
-                Debug.Log("Creating basis for new stars...");
-
-                //Create base for new stars
-                foreach (StarInfo Star in StarDict.Values)
+                if (level == 10)
                 {
-                    //Grab Sun Internal PSystemBody 
-                    var InternalSunPSB = PSystemManager.Instance.systemPrefab.rootBody;
-                    var InternalSunCB = InternalSunPSB.celestialBody;
+                    //Set max zoom
+                    PlanetariumCamera.fetch.maxDistance = 5000000000;
 
-                    //Instantiate Sun Internal PSystemBody
-                    var InternalStarPSB = (PSystemBody)Instantiate(InternalSunPSB);
-                    var InternalStarCB = InternalStarPSB.celestialBody;
+                    Debug.Log("Creating basis for new stars...");
 
-                    //Set Star CB and PSB Parameters
-                    InternalStarPSB.name = Star.name;
-                    InternalStarPSB.flightGlobalsIndex = Star.flightGlobalsIndex;
-                    InternalStarPSB.children.Clear();
+                    //Create base for new stars
+                    foreach (StarSystemDefintion Star in StarDict.Values)
+                    {
+                        //Grab Sun Internal PSystemBody 
+                        var InternalSunPSB = PSystemManager.Instance.systemPrefab.rootBody;
+                        var InternalSunCB = InternalSunPSB.celestialBody;
 
-                    InternalStarPSB.enabled = false;
+                        //Instantiate Sun Internal PSystemBody
+                        var InternalStarPSB = (PSystemBody) Instantiate(InternalSunPSB);
+                        var InternalStarCB = InternalStarPSB.celestialBody;
 
-                    InternalStarCB.bodyName = Star.name;
+                        //Set Star CB and PSB Parameters
+                        InternalStarPSB.name = Star.name;
+                        InternalStarPSB.flightGlobalsIndex = Star.flightGlobalsIndex;
+                        InternalStarPSB.children.Clear();
 
-                    InternalStarCB.Radius = Star.Radius;
+                        InternalStarPSB.enabled = false;
 
-                    InternalStarCB.CBUpdate();
+                        InternalStarCB.bodyName = Star.name;
 
-                    //Add Star to Sun children
-                    InternalSunPSB.children.Add(InternalStarPSB);
+                        InternalStarCB.Radius = Star.Radius;
+
+                        InternalStarCB.CBUpdate();
+
+                        //Add Star to Sun children
+                        InternalSunPSB.children.Add(InternalStarPSB);
+                    }
+
+                    PSystemManager.Instance.systemPrefab.rootBody.flightGlobalsIndex = -1;
+
+                    Debug.Log("Basis for new stars created");
+
+                    //PsystemReady trigger
+                    PSystemManager.Instance.OnPSystemReady.Add(OnPSystemReady);
                 }
 
-                PSystemManager.Instance.systemPrefab.rootBody.flightGlobalsIndex = -1;
+                if (level == 2)
+                {
+                    Initialized = false;
+                }
 
-                Debug.Log("Basis for new stars created");
-
-                //PsystemReady trigger
-                PSystemManager.Instance.OnPSystemReady.Add(OnPSystemReady);
-            }
-
-            if (level == 2)
-            {
-                Initialized = false;
-            }
-
-            if (level == 5)
-            {
-                //Set sun to Kerbol when loading space center
-                Sun.Instance.sun = CBDict["Kerbol"];
-                Planetarium.fetch.Sun = CBDict["Kerbol"];
+                if (level == 5)
+                {
+                    //Set sun to Kerbol when loading space center
+                    Sun.Instance.sun = CBDict["Kerbol"];
+                    Planetarium.fetch.Sun = CBDict["Kerbol"];
+                }
             }
         }
 
@@ -291,25 +178,30 @@ namespace StarSystems
 
             try
             {
-                SolarMasses = double.Parse(ConfigNode.Load("GameData/StarSystems/Configdata/StarNames.cfg").GetNode("BlackHole").GetValue("SolarMasses"));
+                SolarMasses =
+                    double.Parse(
+                        ConfigNode.Load("GameData/StarSystems/Configdata/StarNames.cfg")
+                            .GetNode("BlackHole")
+                            .GetValue("SolarMasses"));
             }
             catch
             {
                 SolarMasses = 7700;
             }
 
-            OriginalSun.Mass = SolarMasses * OriginalSun.Mass;
-            OriginalSun.Radius = (2 * (6.74E-11) * OriginalSun.Mass) / (Math.Pow(299792458, 2.0));
-            OriginalSun.GeeASL = OriginalSun.Mass * (6.674E-11 / 9.81) / Math.Pow(OriginalSun.Radius, 2.0);
-            OriginalSun.gMagnitudeAtCenter = OriginalSun.GeeASL * 9.81 * Math.Pow(OriginalSun.Radius, 2.0);
+            OriginalSun.Mass = SolarMasses*OriginalSun.Mass;
+            OriginalSun.Radius = (2*(6.74E-11)*OriginalSun.Mass)/(Math.Pow(299792458, 2.0));
+            OriginalSun.GeeASL = OriginalSun.Mass*(6.674E-11/9.81)/Math.Pow(OriginalSun.Radius, 2.0);
+            OriginalSun.gMagnitudeAtCenter = OriginalSun.GeeASL*9.81*Math.Pow(OriginalSun.Radius, 2.0);
             OriginalSun.gravParameter = OriginalSun.gMagnitudeAtCenter;
 
-            OriginalSun.scienceValues.InSpaceLowDataValue = OriginalSun.scienceValues.InSpaceLowDataValue * 10f;
-            OriginalSun.scienceValues.RecoveryValue = OriginalSun.scienceValues.RecoveryValue * 5f;
+            OriginalSun.scienceValues.InSpaceLowDataValue = OriginalSun.scienceValues.InSpaceLowDataValue*10f;
+            OriginalSun.scienceValues.RecoveryValue = OriginalSun.scienceValues.RecoveryValue*5f;
 
             OriginalSun.bodyName = "Billy-Hadrick";
 
-            OriginalSun.bodyDescription = "This recently discovered black hole, named after its discoverer Billy-Hadrick Kerman, is the central point where multiple star systems revolve around.";
+            OriginalSun.bodyDescription =
+                "This recently discovered black hole, named after its discoverer Billy-Hadrick Kerman, is the central point where multiple star systems revolve around.";
 
             OriginalSun.CBUpdate();
 
@@ -321,16 +213,17 @@ namespace StarSystems
             ScaledSun.renderer.material.SetColor("_RimColor", new Color(0.0f, 0.0f, 0.0f, 1.0f));
 
             //Update Sun Scale
-            var ScaledSunMeshFilter = (MeshFilter)ScaledSun.GetComponent(typeof(MeshFilter));
-            var SunRatio = (float)OriginalSun.Radius / 261600000f;
+            var ScaledSunMeshFilter = (MeshFilter) ScaledSun.GetComponent(typeof (MeshFilter));
+            var SunRatio = (float) OriginalSun.Radius/261600000f;
 
             MeshScaler.ScaleMesh(ScaledSunMeshFilter.mesh, SunRatio);
 
             //Change Sun Corona
             foreach (var SunCorona in ScaledSun.GetComponentsInChildren<SunCoronas>())
             {
-                SunCorona.renderer.material.mainTexture = GameDatabase.Instance.GetTexture("StarSystems/Resources/BlackHoleCorona", false);
-                var SunCoronaMeshFilter = (MeshFilter)SunCorona.GetComponent(typeof(MeshFilter));
+                SunCorona.renderer.material.mainTexture =
+                    GameDatabase.Instance.GetTexture("StarSystems/Resources/BlackHoleCorona", false);
+                var SunCoronaMeshFilter = (MeshFilter) SunCorona.GetComponent(typeof (MeshFilter));
                 MeshScaler.ScaleMesh(SunCoronaMeshFilter.mesh, SunRatio);
             }
 
@@ -344,21 +237,22 @@ namespace StarSystems
 
                 var LocalSunCB = CBDict["Sun"];
                 var LocalStarCB = CBDict[Star.name];
-                var StarRatio = (float)Star.Radius / 261600000f;
+                var StarRatio = (float) Star.Radius/261600000f;
                 var ScaledStar = TFDict[Star.name];
-                var ScaledStarMeshFilter = (MeshFilter)ScaledStar.GetComponent(typeof(MeshFilter));
+                var ScaledStarMeshFilter = (MeshFilter) ScaledStar.GetComponent(typeof (MeshFilter));
 
                 //Set Star Variables
                 LocalStarCB.Mass = Star.Mass;
                 LocalStarCB.Radius = Star.Radius;
-                LocalStarCB.GeeASL = LocalStarCB.Mass * (6.674E-11 / 9.81) / Math.Pow(LocalStarCB.Radius, 2.0);
-                LocalStarCB.gMagnitudeAtCenter = LocalStarCB.GeeASL * 9.81 * Math.Pow(LocalStarCB.Radius, 2.0);
+                LocalStarCB.GeeASL = LocalStarCB.Mass*(6.674E-11/9.81)/Math.Pow(LocalStarCB.Radius, 2.0);
+                LocalStarCB.gMagnitudeAtCenter = LocalStarCB.GeeASL*9.81*Math.Pow(LocalStarCB.Radius, 2.0);
                 LocalStarCB.gravParameter = LocalStarCB.gMagnitudeAtCenter;
                 LocalStarCB.bodyDescription = Star.BodyDescription;
 
                 //Set Science parameters
-                LocalStarCB.scienceValues.InSpaceLowDataValue = LocalStarCB.scienceValues.InSpaceLowDataValue * Star.ScienceMultiplier;
-                LocalStarCB.scienceValues.RecoveryValue = LocalStarCB.scienceValues.RecoveryValue * Star.ScienceMultiplier;
+                LocalStarCB.scienceValues.InSpaceLowDataValue = LocalStarCB.scienceValues.InSpaceLowDataValue*
+                                                                Star.ScienceMultiplier;
+                LocalStarCB.scienceValues.RecoveryValue = LocalStarCB.scienceValues.RecoveryValue*Star.ScienceMultiplier;
 
                 //Create new Orbitdriver
                 OrbitDriver NewOrbitDriver = LocalStarCB.gameObject.AddComponent<OrbitDriver>();
@@ -374,11 +268,14 @@ namespace StarSystems
                 LocalStarCB.orbitDriver.QueuedUpdate = true;
 
                 //Create new orbit
-                LocalStarCB.orbitDriver.orbit = new Orbit(Star.inclination, Star.eccentricity, Star.semiMajorAxis, Star.LAN, Star.argumentOfPeriapsis, Star.meanAnomalyAtEpoch, Star.epoch, LocalSunCB);
+                LocalStarCB.orbitDriver.orbit = new Orbit(Star.inclination, Star.eccentricity, Star.semiMajorAxis,
+                    Star.LAN, Star.argumentOfPeriapsis, Star.meanAnomalyAtEpoch, Star.epoch, LocalSunCB);
 
                 //Calculate SOI
-                LocalStarCB.sphereOfInfluence = (LocalStarCB.orbit.semiMajorAxis * Math.Pow(LocalStarCB.Mass / LocalStarCB.orbit.referenceBody.Mass, (2.0 / 5)));
-                LocalStarCB.hillSphere = LocalStarCB.orbit.semiMajorAxis * (1.0 - LocalStarCB.orbit.eccentricity) * Math.Pow((LocalStarCB.Mass / (3.0 * LocalStarCB.orbit.referenceBody.Mass)), 1.0 / 3.0);
+                LocalStarCB.sphereOfInfluence = (LocalStarCB.orbit.semiMajorAxis*
+                                                 Math.Pow(LocalStarCB.Mass/LocalStarCB.orbit.referenceBody.Mass, (2.0/5)));
+                LocalStarCB.hillSphere = LocalStarCB.orbit.semiMajorAxis*(1.0 - LocalStarCB.orbit.eccentricity)*
+                                         Math.Pow((LocalStarCB.Mass/(3.0*LocalStarCB.orbit.referenceBody.Mass)), 1.0/3.0);
 
                 //Update CelestialBody
                 LocalStarCB.CBUpdate();
@@ -392,7 +289,7 @@ namespace StarSystems
                 //Update Corona Ratio
                 foreach (var StarCorona in ScaledStar.GetComponentsInChildren<SunCoronas>())
                 {
-                    var StarCoronaMeshFilter = (MeshFilter)StarCorona.GetComponent(typeof(MeshFilter));
+                    var StarCoronaMeshFilter = (MeshFilter) StarCorona.GetComponent(typeof (MeshFilter));
                     MeshScaler.ScaleMesh(StarCoronaMeshFilter.mesh, StarRatio);
                 }
 
@@ -406,7 +303,8 @@ namespace StarSystems
 
                     foreach (var StarCorona in ScaledStar.GetComponentsInChildren<SunCoronas>())
                     {
-                        StarCorona.renderer.material.mainTexture = GameDatabase.Instance.GetTexture("StarSystems/Resources/BlueStarCorona", false);
+                        StarCorona.renderer.material.mainTexture =
+                            GameDatabase.Instance.GetTexture("StarSystems/Resources/BlueStarCorona", false);
                     }
                 }
 
@@ -420,7 +318,8 @@ namespace StarSystems
 
                     foreach (var StarCorona in ScaledStar.GetComponentsInChildren<SunCoronas>())
                     {
-                        StarCorona.renderer.material.mainTexture = GameDatabase.Instance.GetTexture("StarSystems/Resources/RedStarCorona", false);
+                        StarCorona.renderer.material.mainTexture =
+                            GameDatabase.Instance.GetTexture("StarSystems/Resources/RedStarCorona", false);
                     }
                 }
 
@@ -429,24 +328,25 @@ namespace StarSystems
             }
 
             //Create starlight controller
-            var StarLightSwitcherObj = new GameObject("StarLightSwitcher", typeof(StarLightSwitcher));
+            var StarLightSwitcherObj = new GameObject("StarLightSwitcher", typeof (StarLightSwitcher));
             GameObject.DontDestroyOnLoad(StarLightSwitcherObj);
             foreach (string StarName in StarDict.Keys)
             {
                 //Add stars to dictionary
-                StarLightSwitcherObj.GetComponent<StarLightSwitcher>().AddStar(CBDict[StarName], StarDict[StarName].StarColor);
+                StarLightSwitcherObj.GetComponent<StarLightSwitcher>()
+                    .AddStar(CBDict[StarName], StarDict[StarName].StarColor);
             }
 
             Debug.Log("Starlight controller created");
 
             //Create Navball fixer
-            var NavBallFixerObj = new GameObject("NavBallFixer", typeof(NavBallFixer));
+            var NavBallFixerObj = new GameObject("NavBallFixer", typeof (NavBallFixer));
             GameObject.DontDestroyOnLoad(NavBallFixerObj);
 
             Debug.Log("Navball fixer created");
 
             //Create Vessel fixer
-            var VesselFixerObj = new GameObject("SaveGameFixer", typeof(VesselFixer));
+            var VesselFixerObj = new GameObject("SaveGameFixer", typeof (VesselFixer));
             GameObject.DontDestroyOnLoad(VesselFixerObj);
 
             Debug.Log("Vessel fixer created");

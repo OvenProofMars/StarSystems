@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace StarSystems.Data
 {
-    public class StarInfo
+    public class StarSystemDefintion
     {
-        public StarInfo(string Name, string BodyDescription, PlanetColor StarColor, double Inclination, double Eccentricity, double SemiMajorAxis, double LAN, double ArgumentOfPeriapsis, double MeanAnomalyAtEpoch, double Epoch, double Mass, double Radius, int FlightGlobalsIndex, float ScienceMultiplier)
+        public StarSystemDefintion(string Name, string BodyDescription, PlanetColor StarColor, double Inclination, double Eccentricity, double SemiMajorAxis, double LAN, double ArgumentOfPeriapsis, double MeanAnomalyAtEpoch, double Epoch, double Mass, double Radius, int FlightGlobalsIndex, float ScienceMultiplier)
         {
             this.Name = Name;
             this.BodyDescription = BodyDescription;
@@ -25,7 +25,7 @@ namespace StarSystems.Data
             this.ScienceMultiplier = ScienceMultiplier;
         }
 
-        public StarInfo()
+        public StarSystemDefintion()
         {
                
         }

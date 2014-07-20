@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace StarSystems.Data
 {
-    public class SunInfo
+    public class RootDefinition
     {
-        public SunInfo(double SolarMasses, SunType SunType)
+        public RootDefinition(double SolarMasses, SunType SunType)
         {
             this.SolarMasses = SolarMasses;
             this.SunType = SunType;

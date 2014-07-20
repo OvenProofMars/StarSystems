@@ -30,7 +30,7 @@ namespace StarSystems.Utils
             }
         }
 
-        public StarSystemInfo GetConfigData()
+        public KspSystemDefinition GetConfigData()
         {
             if (system_config == null)
             {
@@ -44,14 +44,14 @@ namespace StarSystems.Utils
                 }
                 else
                 {
-                    ConfigNode solarNode = system_config.GetNode("Solar");
-                    StarSystemInfo starSystemInfo;
-                    SunInfo sunInfo;
+                    ConfigNode kspNode = system_config.GetNode("KSPSystem");
+                    KspSystemDefinition starSystemInfo;
+                    RootDefinition sunInfo;
                     double sun_solar_mass;
                     SunType sun_solar_type;
                     try
                     {
-                        sun_solar_mass = double.Parse(solarNode.GetNode("Sun").GetValue("SolarMasses")); 
+                        sun_solar_mass = double.Parse(kspNode.GetNode("Root").GetValue("SolarMasses")); 
                     }
                     catch
                     {
@@ -59,37 +59,37 @@ namespace StarSystems.Utils
                     }
                     try
                     {
-                        sun_solar_type = ((SunType)int.Parse(solarNode.GetNode("Sun").GetValue("Type"))); 
+                        sun_solar_type = ((SunType)int.Parse(kspNode.GetNode("Root").GetValue("Type"))); 
                     }
                     catch
                     {
                         sun_solar_type = SunType.Blackhole;
                     }
-                    sunInfo = new SunInfo(sun_solar_mass, sun_solar_type);
+                    sunInfo = new RootDefinition(sun_solar_mass, sun_solar_type);
                     try
                     {
-                        starSystemInfo = new StarSystemInfo(sunInfo,
-                            double.Parse(solarNode.GetNode("Kerbol").GetValue("semiMajorAxis")));
+                        starSystemInfo = new KspSystemDefinition(sunInfo,
+                            double.Parse(kspNode.GetNode("Kerbol").GetValue("semiMajorAxis")));
                     }
                     catch
                     {
-                        starSystemInfo = new StarSystemInfo(sunInfo, 4500000000000);
+                        starSystemInfo = new KspSystemDefinition(sunInfo, 4500000000000);
                     }
-                    starSystemInfo.Stars = getStars(solarNode.GetNode("Stars").GetNodes("Star"));
+                    starSystemInfo.Stars = getStars(kspNode.GetNode("StarSystems").GetNodes("StarSystem"));
                 }
             }
             return starSystemInfo;
 
         }
-        List<StarInfo> getStars(ConfigNode[] stars_config)
+        List<StarSystemDefintion> getStars(ConfigNode[] stars_config)
         {
-            List<StarInfo> returnValue = new List<StarInfo>();
+            List<StarSystemDefintion> returnValue = new List<StarSystemDefintion>();
             //Grab star info
             foreach (var star in stars_config)
             {
                 if (IsStarValid(star))
                 {
-                    StarInfo starInfo = new StarInfo();
+                    StarSystemDefintion starInfo = new StarSystemDefintion();
 
                     starInfo.name = star.GetNode("CelestialBody").GetValue("name");
                     starInfo.FlightGlobalsIndex = int.Parse(star.GetNode("CelestialBody").GetValue("flightGlobalIndex"));
@@ -191,7 +191,7 @@ namespace StarSystems.Utils
                 }
                 else
                 {
-                    Debug.Log("Star Unable be create lack requrement fields: CelestialBody/name,CelestialBody/flightGlobalIndex,Orbit/semiMajorAxis");
+                    Debug.Log("Star Unable be create lack requirement fields: CelestialBody/name,CelestialBody/flightGlobalIndex,Orbit/semiMajorAxis");
                     continue;
                 }
             }
@@ -233,11 +233,11 @@ namespace StarSystems.Utils
                 return false;
             }
             Debug.Log("Valid star configs.");
-            if (system_config.HasNode("Solar"))
+            if (system_config.HasNode("KSPSystem"))
             {
-                if (system_config.HasNode("Kerbol") && system_config.HasNode("Sun") && system_config.HasNode("Stars"))
+                if (system_config.HasNode("Kerbol") && system_config.HasNode("Root") && system_config.HasNode("StarSystems"))
                 {
-                    ConfigNode[] stars = system_config.GetNodes("Star");
+                    ConfigNode[] stars = system_config.GetNode("StarSystems").GetNodes("StarSystem");
                     if (stars.Count() != 0)
                     {
                         system_config_valid = true;

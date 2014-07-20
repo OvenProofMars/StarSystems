@@ -6,23 +6,23 @@ using System.Threading.Tasks;
 
 namespace StarSystems.Data
 {
-    public class StarSystemInfo
+    public class KspSystemDefinition
     {
-        public StarSystemInfo(SunInfo Sun, double SemiMajorAxis)
+        public KspSystemDefinition(RootDefinition Sun, double SemiMajorAxis)
         {
             this.Sun = Sun;
             this.SemiMajorAxis = SemiMajorAxis;
-            Stars = new List<StarInfo>();
+            Stars = new List<StarSystemDefintion>();
         }
-        public StarSystemInfo(SunInfo Sun, double SemiMajorAxis, List<StarInfo> Stars)
+        public KspSystemDefinition(RootDefinition Sun, double SemiMajorAxis, List<StarSystemDefintion> Stars)
         {
 
             this.Sun = Sun;
             this.SemiMajorAxis = SemiMajorAxis;
             this.Stars = Stars;
         }
-        public List<StarInfo> Stars { get; set; }
-        public SunInfo Sun { get; set; }
+        public List<StarSystemDefintion> Stars { get; set; }
+        public RootDefinition Sun { get; set; }
         public double SemiMajorAxis { get; set; }
     }
 
