@@ -201,7 +201,7 @@ namespace StarSystems
             Kerbol.Mass = 1.7565670E28;
             Kerbol.Radius = 261600000d;
 
-            Kerbol.flightGlobalsIndex = 0;
+            Kerbol.flightGlobalsIndex = 200;
             Kerbol.StarColor = "Yellow";
             Kerbol.ScienceMultiplier = 1f;
 
@@ -252,8 +252,6 @@ namespace StarSystems
                     InternalSunPSB.children.Add(InternalStarPSB);
                 }
 
-                PSystemManager.Instance.systemPrefab.rootBody.flightGlobalsIndex = -1;
-
                 Debug.Log("Basis for new stars created");
 
                 //PsystemReady trigger
@@ -286,28 +284,7 @@ namespace StarSystems
                 TFDict[ScaledPlanet.name] = ScaledPlanet;
             }
 
-            Debug.Log("Moving standard planets...");
-
-            //Add all standard planets to Kerbol
-            foreach (var OriginalPlanet in StandardPlanets)
-            {
-                foreach (var PlanetCB in CBDict.Values)
-                {
-                    if (PlanetCB.name == OriginalPlanet)
-                    {
-                        PlanetCB.orbitDriver.referenceBody = CBDict["Kerbol"];
-
-                        CBDict["Kerbol"].orbitingBodies.Add(PlanetCB);
-                        PlanetCB.orbitDriver.UpdateOrbit();
-
-                        break;
-                    }
-                }
-            }
-
-            CBDict["Kerbol"].CBUpdate();
-
-            Debug.Log("Standard planets moved");
+            
 
             Debug.Log("Altering sun...");
 
@@ -397,7 +374,7 @@ namespace StarSystems
             LocalStarCB.orbitDriver.celestialBody = LocalStarCB;
             LocalStarCB.orbitDriver.referenceBody = LocalSunCB;
             LocalStarCB.orbitDriver.updateMode = OrbitDriver.UpdateMode.UPDATE;
-            LocalStarCB.orbitDriver.QueuedUpdate = true;
+            //LocalStarCB.orbitDriver.QueuedUpdate = true;
 
             //Create new orbit
             LocalStarCB.orbitDriver.orbit = new Orbit(Star.inclination, Star.eccentricity, Star.semiMajorAxis, Star.LAN, Star.argumentOfPeriapsis, Star.meanAnomalyAtEpoch, Star.epoch, LocalSunCB);
@@ -454,6 +431,29 @@ namespace StarSystems
 
             }
 
+            Debug.Log("Moving standard planets...");
+
+            //Add all standard planets to Kerbol
+            foreach (var OriginalPlanet in StandardPlanets)
+            {
+                foreach (var PlanetCB in CBDict.Values)
+                {
+                    if (PlanetCB.name == OriginalPlanet)
+                    {
+                        PlanetCB.orbitDriver.referenceBody = CBDict["Kerbol"];
+
+                        CBDict["Kerbol"].orbitingBodies.Add(PlanetCB);
+                        PlanetCB.orbitDriver.UpdateOrbit();
+
+                        break;
+                    }
+                }
+            }
+
+            CBDict["Kerbol"].CBUpdate();
+
+            Debug.Log("Standard planets moved");
+            
             //Create starlight controller
             var StarLightSwitcherObj = new GameObject("StarLightSwitcher", typeof(StarLightSwitcher));
             GameObject.DontDestroyOnLoad(StarLightSwitcherObj);
@@ -470,12 +470,6 @@ namespace StarSystems
             GameObject.DontDestroyOnLoad(NavBallFixerObj);
 
             Debug.Log("Navball fixer created");
-
-            //Create Vessel fixer
-            var VesselFixerObj = new GameObject("SaveGameFixer", typeof(VesselFixer));
-            GameObject.DontDestroyOnLoad(VesselFixerObj);
-
-            Debug.Log("Vessel fixer created");
         }
     }
 
@@ -582,38 +576,6 @@ namespace StarSystems
 
                     }
                 }
-            }
-        }
-    }
-
-    //Withouth VesselFixer your spaceships will crash into the nearest planet when going to the trackingstation
-    public class VesselFixer : MonoBehaviour
-    {
-        void Update()
-        {   
-            //When entering trackingstation
-            if (HighLogic.LoadedScene == GameScenes.TRACKSTATION && StarSystems.Initialized == false)
-            {
-                //Update the orbitdrivers
-                foreach (OrbitDriver orb in Planetarium.Orbits)
-                {
-                    orb.UpdateOrbit();
-                }
-
-                //Incase a vessel get lost, reload it
-                foreach (ProtoVessel Pves in HighLogic.CurrentGame.flightState.protoVessels)
-                {
-                    if (Pves.vesselRef == null)
-                    {
-                        Pves.Load(HighLogic.CurrentGame.flightState);
-                    }
-                }
-            }
-
-            //Once a flight has been started vessels wont crash into planets anymore....I hope.....
-            if (HighLogic.LoadedScene == GameScenes.FLIGHT && StarSystems.Initialized == false)
-            {
-                StarSystems.Initialized = true;
             }
         }
     }
