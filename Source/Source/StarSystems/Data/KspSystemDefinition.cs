@@ -8,21 +8,21 @@ namespace StarSystems.Data
 {
     public class KspSystemDefinition
     {
-        public KspSystemDefinition(RootDefinition Sun, double SemiMajorAxis)
+        public KspSystemDefinition(RootDefinition Root, double SemiMajorAxis)
         {
-            this.Sun = Sun;
+            this.Root = Root;
             this.SemiMajorAxis = SemiMajorAxis;
             Stars = new List<StarSystemDefintion>();
         }
-        public KspSystemDefinition(RootDefinition Sun, double SemiMajorAxis, List<StarSystemDefintion> Stars)
+        public KspSystemDefinition(RootDefinition Root, double SemiMajorAxis, List<StarSystemDefintion> Stars)
         {
 
-            this.Sun = Sun;
+            this.Root = Root;
             this.SemiMajorAxis = SemiMajorAxis;
             this.Stars = Stars;
         }
         public List<StarSystemDefintion> Stars { get; set; }
-        public RootDefinition Sun { get; set; }
+        public RootDefinition Root { get; set; }
         public double SemiMajorAxis { get; set; }
     }
 

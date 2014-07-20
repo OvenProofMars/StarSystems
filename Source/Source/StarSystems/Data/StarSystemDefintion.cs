@@ -21,7 +21,7 @@ namespace StarSystems.Data
             this.MeanAnomalyAtEpoch = MeanAnomalyAtEpoch;
             this.Epoch = Epoch;
             this.Radius = Radius;
-            this.FlightGlobalsIndex = flightGlobalsIndex;
+            this.FlightGlobalsIndex = FlightGlobalsIndex;
             this.ScienceMultiplier = ScienceMultiplier;
         }
 
@@ -29,6 +29,7 @@ namespace StarSystems.Data
         {
                
         }
+        public bool OrignalStar { get; set; }
         public string Name { get; set; }
         public string BodyDescription { get; set; }
         public PlanetColor StarColor { get; set; }

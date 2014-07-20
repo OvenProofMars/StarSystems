@@ -17,7 +17,7 @@ namespace StarSystems
         /// </summary>
         void Update()
         {
-            if (HighLogic.LoadedScene == GameScenes.TRACKSTATION && StarSystems.Initialized == false)
+            if (HighLogic.LoadedScene == GameScenes.TRACKSTATION && StarSystem.Initialized == false)
             {
                 //Update the orbitdrivers
                 foreach (OrbitDriver orb in Planetarium.Orbits)
@@ -36,9 +36,9 @@ namespace StarSystems
             }
 
             //Once a flight has been started vessels wont crash into planets anymore....I hope.....
-            if (HighLogic.LoadedScene == GameScenes.FLIGHT && StarSystems.Initialized == false)
+            if (HighLogic.LoadedScene == GameScenes.FLIGHT && StarSystem.Initialized == false)
             {
-                StarSystems.Initialized = true;
+                StarSystem.Initialized = true;
             }
         }
     }

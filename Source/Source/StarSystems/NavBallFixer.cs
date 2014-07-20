@@ -63,7 +63,7 @@ namespace StarSystems
         {
             if (NavBallCreated == true && NewNavBallEnabled == false && FlightGlobals.ActiveVessel != null)
             {
-                if (FlightGlobals.ActiveVessel.mainBody.name == StarSystems.CBDict["Sun"].name)
+                if (FlightGlobals.ActiveVessel.mainBody.name == StarSystem.CBDict["Sun"].name)
                 {
                     if (NavBall == null)
                     {
@@ -84,7 +84,7 @@ namespace StarSystems
             //Deactivate navball when exiting interstellar space
             if (NavBallCreated == true && NewNavBallEnabled == true && FlightGlobals.ActiveVessel != null)
             {
-                if (FlightGlobals.ActiveVessel.mainBody.name != StarSystems.CBDict["Sun"].name)
+                if (FlightGlobals.ActiveVessel.mainBody.name != StarSystem.CBDict["Sun"].name)
                 {
                     if (NavBall == null)
                     {

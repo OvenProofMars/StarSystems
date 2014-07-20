@@ -39,17 +39,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
-    <Compile Include="ConfigSolarNodes.cs" />
+    <Compile Include="Creator\CenterRoot.cs" />
+    <Compile Include="Creator\Star.cs" />
+    <Compile Include="Utils\ConfigSolarNodes.cs" />
     <Compile Include="Data\Enums.cs" />
-    <Compile Include="Data\StarInfo.cs" />
-    <Compile Include="Data\StarSystemInfo.cs" />
-    <Compile Include="Data\SunInfo.cs" />
+    <Compile Include="Data\StarSystemDefintion.cs" />
+    <Compile Include="Data\KspSystemDefinition.cs" />
+    <Compile Include="Data\RootDefinition.cs" />
+    <Compile Include="Utils\EnumUtilities.cs" />
     <Compile Include="MeshScaler.cs" />
     <Compile Include="NavBallFixer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StarSystem.cs" />
-    <Compile Include="StarSystems.cs" />
+    <Compile Include="Utils\StarLightSwitcher.cs" />
     <Compile Include="VesselFixer.cs" />
   </ItemGroup>
   <ItemGroup>

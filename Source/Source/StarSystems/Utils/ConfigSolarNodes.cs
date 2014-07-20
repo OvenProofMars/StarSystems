@@ -32,6 +32,7 @@ namespace StarSystems.Utils
 
         public KspSystemDefinition GetConfigData()
         {
+            KspSystemDefinition kspSystemInfo;
             if (system_config == null)
             {
                 return null;
@@ -45,7 +46,6 @@ namespace StarSystems.Utils
                 else
                 {
                     ConfigNode kspNode = system_config.GetNode("KSPSystem");
-                    KspSystemDefinition starSystemInfo;
                     RootDefinition sunInfo;
                     double sun_solar_mass;
                     SunType sun_solar_type;
@@ -68,17 +68,17 @@ namespace StarSystems.Utils
                     sunInfo = new RootDefinition(sun_solar_mass, sun_solar_type);
                     try
                     {
-                        starSystemInfo = new KspSystemDefinition(sunInfo,
+                        kspSystemInfo = new KspSystemDefinition(sunInfo,
                             double.Parse(kspNode.GetNode("Kerbol").GetValue("semiMajorAxis")));
                     }
                     catch
                     {
-                        starSystemInfo = new KspSystemDefinition(sunInfo, 4500000000000);
+                        kspSystemInfo = new KspSystemDefinition(sunInfo, 4500000000000);
                     }
-                    starSystemInfo.Stars = getStars(kspNode.GetNode("StarSystems").GetNodes("StarSystem"));
+                    kspSystemInfo.Stars = getStars(kspNode.GetNode("StarSystems").GetNodes("StarSystem"));
                 }
             }
-            return starSystemInfo;
+            return kspSystemInfo;
 
         }
         List<StarSystemDefintion> getStars(ConfigNode[] stars_config)
@@ -89,14 +89,14 @@ namespace StarSystems.Utils
             {
                 if (IsStarValid(star))
                 {
-                    StarSystemDefintion starInfo = new StarSystemDefintion();
+                    StarSystemDefintion starSystemDefintion = new StarSystemDefintion();
 
-                    starInfo.name = star.GetNode("CelestialBody").GetValue("name");
-                    starInfo.FlightGlobalsIndex = int.Parse(star.GetNode("CelestialBody").GetValue("flightGlobalIndex"));
-                    starInfo.SemiMajorAxis = double.Parse(star.GetNode("Orbit").GetValue("semiMajorAxis"));
+                    starSystemDefintion.Name = star.GetNode("CelestialBody").GetValue("name");
+                    starSystemDefintion.FlightGlobalsIndex = int.Parse(star.GetNode("CelestialBody").GetValue("flightGlobalIndex"));
+                    starSystemDefintion.SemiMajorAxis = double.Parse(star.GetNode("Orbit").GetValue("semiMajorAxis"));
                     try
                     {
-                        starInfo.BodyDescription = star.GetNode("CelestialBody").GetValue("BodyDescription");
+                        starSystemDefintion.BodyDescription = star.GetNode("CelestialBody").GetValue("BodyDescription");
                     }
                     catch (Exception e)
                     {
@@ -104,90 +104,90 @@ namespace StarSystems.Utils
 
                     try
                     {
-                        starInfo.Radius = double.Parse(star.GetNode("CelestialBody").GetValue("Radius"));
+                        starSystemDefintion.Radius = double.Parse(star.GetNode("CelestialBody").GetValue("Radius"));
                     }
                     catch (Exception e)
                     {
-                        starInfo.Radius = 261600000;
+                        starSystemDefintion.Radius = 261600000;
                     }
                     try
                     {
-                        starInfo.StarColor =
+                        starSystemDefintion.StarColor =
                             (PlanetColor)
                                 EnumUtilities.Parse(typeof (PlanetColor),
                                     star.GetNode("CelestialBody").GetValue("StarColor"));
                     }
                     catch (Exception e)
                     {
-                        starInfo.StarColor = PlanetColor.Yellow;
+                        starSystemDefintion.StarColor = PlanetColor.Yellow;
                     }
                     try
                     {
-                        starInfo.Mass = double.Parse(star.GetNode("CelestialBody").GetValue("Mass"));
+                        starSystemDefintion.Mass = double.Parse(star.GetNode("CelestialBody").GetValue("Mass"));
                     }
                     catch (Exception e)
                     {
-                        starInfo.Mass = 1.7565670E28;
+                        starSystemDefintion.Mass = 1.7565670E28;
                     }
                     try
                     {
-                        starInfo.ScienceMultiplier =
+                        starSystemDefintion.ScienceMultiplier =
                             float.Parse(star.GetNode("CelestialBody").GetValue("ScienceMultiplier"));
                     }
                     catch (Exception e)
                     {
-                        starInfo.ScienceMultiplier = 10f;
+                        starSystemDefintion.ScienceMultiplier = 10f;
                     }
                     try
                     {
-                        starInfo.inclination = double.Parse(star.GetNode("Orbit").GetValue("inclination"));
+                        starSystemDefintion.Inclination = double.Parse(star.GetNode("Orbit").GetValue("inclination"));
                     }
                     catch (Exception e)
                     {
-                        starInfo.inclination = 0;
+                        starSystemDefintion.Inclination = 0;
                     }
                     try
                     {
-                        starInfo.eccentricity = double.Parse(star.GetNode("Orbit").GetValue("eccentricity"));
+                        starSystemDefintion.Eccentricity = double.Parse(star.GetNode("Orbit").GetValue("eccentricity"));
                     }
                     catch (Exception e)
                     {
-                        starInfo.eccentricity = 0;
+                        starSystemDefintion.Eccentricity = 0;
                     }
                     try
                     {
-                        starInfo.LAN = double.Parse(star.GetNode("Orbit").GetValue("LAN"));
+                        starSystemDefintion.LAN = double.Parse(star.GetNode("Orbit").GetValue("LAN"));
                     }
                     catch (Exception e)
                     {
-                        starInfo.LAN = 0;
+                        starSystemDefintion.LAN = 0;
                     }
                     try
                     {
-                        starInfo.argumentOfPeriapsis =
+                        starSystemDefintion.ArgumentOfPeriapsis =
                             double.Parse(star.GetNode("Orbit").GetValue("argumentOfPeriapsis"));
                     }
                     catch (Exception e)
                     {
-                        starInfo.LAN = 0;
+                        starSystemDefintion.ArgumentOfPeriapsis = 0;
                     }
                     try
                     {
-                        starInfo.meanAnomalyAtEpoch = double.Parse(star.GetNode("Orbit").GetValue("meanAnomalyAtEpoch"));
+                        starSystemDefintion.MeanAnomalyAtEpoch = double.Parse(star.GetNode("Orbit").GetValue("meanAnomalyAtEpoch"));
                     }
                     catch (Exception e)
                     {
-                        starInfo.meanAnomalyAtEpoch = 0;
+                        starSystemDefintion.MeanAnomalyAtEpoch = 0;
                     }
                     try
                     {
-                        starInfo.epoch = double.Parse(star.GetNode("Orbit").GetValue("epoch"));
+                        starSystemDefintion.Epoch = double.Parse(star.GetNode("Orbit").GetValue("epoch"));
                     }
                     catch (Exception e)
                     {
-                        starInfo.epoch = 0;
+                        starSystemDefintion.Epoch = 0;
                     }
-                    returnValue.Add(starInfo);
+                    returnValue.Add(starSystemDefintion);
                 }
                 else
                 {

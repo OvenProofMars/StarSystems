@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using StarSystems.Utils;
 
 namespace StarSystems.Data
 {
@@ -18,7 +19,7 @@ namespace StarSystems.Data
         Blue,
         [EnumDescriptionAttribute("Red")]
         Red,
-        [EnumDescriptionAttribute("Yellow")]
+        [EnumDescription("Yellow")]
         Yellow
     }
 
