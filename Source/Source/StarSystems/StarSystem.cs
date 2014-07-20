@@ -10,6 +10,7 @@ using UnityEngine;
 
 namespace StarSystems
 {
+    [KSPAddon(KSPAddon.Startup.Instantly, false)]
     public class StarSystem : MonoBehaviour
     {
         public static Dictionary<string, CelestialBody> CBDict = new Dictionary<string, CelestialBody>();
@@ -38,34 +39,45 @@ namespace StarSystems
 
         private void Start()
         {
+
+            Debug.Log("Ksp Solar System Start");
             if (ConfigSolarNodes.Instance.IsValid("system"))
             {
                 kspSystemDefinition = ConfigSolarNodes.Instance.GetConfigData();
-                //Load Kerbol
-                var Kerbol = new StarSystemDefintion();
-                Kerbol.Name = "Kerbol";
-                Kerbol.Inclination = 0;
-                Kerbol.Eccentricity = 0;
-                Kerbol.SemiMajorAxis = kspSystemDefinition.SemiMajorAxis;
-                Kerbol.LAN = 0;
-                Kerbol.ArgumentOfPeriapsis = 0;
-                Kerbol.MeanAnomalyAtEpoch = 0;
-                Kerbol.Epoch = 0;
-                Kerbol.Mass = 1.7565670E28;
-                Kerbol.Radius = 261600000d;
-                Kerbol.FlightGlobalsIndex = 0;
-                Kerbol.StarColor = PlanetColor.Yellow;
-                Kerbol.ScienceMultiplier = 1f;
-                Kerbol.OrignalStar = true;
-                Kerbol.BodyDescription =
-                    "The Sun is the most well known object in the daytime sky. Scientists have noted a particular burning sensation and potential loss of vision if it is stared at for long periods of time. This is especially important to keep in mind considering the effect shiny objects have on the average Kerbal.";
-                kspSystemDefinition.Stars.Add(Kerbol);
-                Debug.Log("Ksp Solar System Defintions loaded");
+                if (kspSystemDefinition.Stars.Count == 0)
+                {
+                    //kill the mod for bad config
+                    Debug.Log("Mod fall back , no stars found");
+                    kspSystemDefinition = null;
+                }
+                else
+                {
+                    //Load Kerbol
+                    var Kerbol = new StarSystemDefintion();
+                    Kerbol.Name = "Kerbol";
+                    Kerbol.Inclination = 0;
+                    Kerbol.Eccentricity = 0;
+                    Kerbol.SemiMajorAxis = kspSystemDefinition.SemiMajorAxis;
+                    Kerbol.LAN = 0;
+                    Kerbol.ArgumentOfPeriapsis = 0;
+                    Kerbol.MeanAnomalyAtEpoch = 0;
+                    Kerbol.Epoch = 0;
+                    Kerbol.Mass = 1.7565670E28;
+                    Kerbol.Radius = 261600000d;
+                    Kerbol.FlightGlobalsIndex = 0;
+                    Kerbol.StarColor = PlanetColor.Yellow;
+                    Kerbol.ScienceMultiplier = 1f;
+                    Kerbol.OrignalStar = true;
+                    Kerbol.BodyDescription =
+                        "The Sun is the most well known object in the daytime sky. Scientists have noted a particular burning sensation and potential loss of vision if it is stared at for long periods of time. This is especially important to keep in mind considering the effect shiny objects have on the average Kerbal.";
+                    kspSystemDefinition.Stars.Add(Kerbol);
+                    Debug.Log("Ksp Solar System Defintions loaded");
+                }
             }
             else
             {
                 //kill the mod for bad config
-                Debug.Log("Config for ksp Mod stoped working");
+                Debug.Log("faild Config for the Mod ,stoped working");
                 kspSystemDefinition = null;
             }
 

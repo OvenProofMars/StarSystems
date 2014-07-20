@@ -89,14 +89,15 @@ namespace StarSystems.Utils
             {
                 if (IsStarValid(star))
                 {
+                    var sun = star.GetNode("Sun");
                     StarSystemDefintion starSystemDefintion = new StarSystemDefintion();
 
-                    starSystemDefintion.Name = star.GetNode("CelestialBody").GetValue("name");
-                    starSystemDefintion.FlightGlobalsIndex = int.Parse(star.GetNode("CelestialBody").GetValue("flightGlobalIndex"));
-                    starSystemDefintion.SemiMajorAxis = double.Parse(star.GetNode("Orbit").GetValue("semiMajorAxis"));
+                    starSystemDefintion.Name = sun.GetNode("CelestialBody").GetValue("name");
+                    starSystemDefintion.FlightGlobalsIndex = int.Parse(sun.GetNode("CelestialBody").GetValue("flightGlobalIndex"));
+                    starSystemDefintion.SemiMajorAxis = double.Parse(sun.GetNode("Orbit").GetValue("semiMajorAxis"));
                     try
                     {
-                        starSystemDefintion.BodyDescription = star.GetNode("CelestialBody").GetValue("BodyDescription");
+                        starSystemDefintion.BodyDescription = sun.GetNode("CelestialBody").GetValue("BodyDescription");
                     }
                     catch (Exception e)
                     {
@@ -104,7 +105,7 @@ namespace StarSystems.Utils
 
                     try
                     {
-                        starSystemDefintion.Radius = double.Parse(star.GetNode("CelestialBody").GetValue("Radius"));
+                        starSystemDefintion.Radius = double.Parse(sun.GetNode("CelestialBody").GetValue("Radius"));
                     }
                     catch (Exception e)
                     {
@@ -115,7 +116,7 @@ namespace StarSystems.Utils
                         starSystemDefintion.StarColor =
                             (PlanetColor)
                                 EnumUtilities.Parse(typeof (PlanetColor),
-                                    star.GetNode("CelestialBody").GetValue("StarColor"));
+                                    sun.GetNode("CelestialBody").GetValue("StarColor"));
                     }
                     catch (Exception e)
                     {
@@ -123,7 +124,7 @@ namespace StarSystems.Utils
                     }
                     try
                     {
-                        starSystemDefintion.Mass = double.Parse(star.GetNode("CelestialBody").GetValue("Mass"));
+                        starSystemDefintion.Mass = double.Parse(sun.GetNode("CelestialBody").GetValue("Mass"));
                     }
                     catch (Exception e)
                     {
@@ -132,7 +133,7 @@ namespace StarSystems.Utils
                     try
                     {
                         starSystemDefintion.ScienceMultiplier =
-                            float.Parse(star.GetNode("CelestialBody").GetValue("ScienceMultiplier"));
+                            float.Parse(sun.GetNode("CelestialBody").GetValue("ScienceMultiplier"));
                     }
                     catch (Exception e)
                     {
@@ -140,7 +141,7 @@ namespace StarSystems.Utils
                     }
                     try
                     {
-                        starSystemDefintion.Inclination = double.Parse(star.GetNode("Orbit").GetValue("inclination"));
+                        starSystemDefintion.Inclination = double.Parse(sun.GetNode("Orbit").GetValue("inclination"));
                     }
                     catch (Exception e)
                     {
@@ -148,7 +149,7 @@ namespace StarSystems.Utils
                     }
                     try
                     {
-                        starSystemDefintion.Eccentricity = double.Parse(star.GetNode("Orbit").GetValue("eccentricity"));
+                        starSystemDefintion.Eccentricity = double.Parse(sun.GetNode("Orbit").GetValue("eccentricity"));
                     }
                     catch (Exception e)
                     {
@@ -156,7 +157,7 @@ namespace StarSystems.Utils
                     }
                     try
                     {
-                        starSystemDefintion.LAN = double.Parse(star.GetNode("Orbit").GetValue("LAN"));
+                        starSystemDefintion.LAN = double.Parse(sun.GetNode("Orbit").GetValue("LAN"));
                     }
                     catch (Exception e)
                     {
@@ -165,7 +166,7 @@ namespace StarSystems.Utils
                     try
                     {
                         starSystemDefintion.ArgumentOfPeriapsis =
-                            double.Parse(star.GetNode("Orbit").GetValue("argumentOfPeriapsis"));
+                            double.Parse(sun.GetNode("Orbit").GetValue("argumentOfPeriapsis"));
                     }
                     catch (Exception e)
                     {
@@ -173,7 +174,7 @@ namespace StarSystems.Utils
                     }
                     try
                     {
-                        starSystemDefintion.MeanAnomalyAtEpoch = double.Parse(star.GetNode("Orbit").GetValue("meanAnomalyAtEpoch"));
+                        starSystemDefintion.MeanAnomalyAtEpoch = double.Parse(sun.GetNode("Orbit").GetValue("meanAnomalyAtEpoch"));
                     }
                     catch (Exception e)
                     {
@@ -181,7 +182,7 @@ namespace StarSystems.Utils
                     }
                     try
                     {
-                        starSystemDefintion.Epoch = double.Parse(star.GetNode("Orbit").GetValue("epoch"));
+                        starSystemDefintion.Epoch = double.Parse(sun.GetNode("Orbit").GetValue("epoch"));
                     }
                     catch (Exception e)
                     {
@@ -201,19 +202,28 @@ namespace StarSystems.Utils
         bool IsStarValid(ConfigNode star)
         {
             bool returnValue = false;
-            if (star.HasNode("CelestialBody") && star.HasNode("Orbit"))
+            ConfigNode sun = star.GetNode("Sun");
+            Debug.Log(star);
+            Debug.Log(sun);
+            Debug.Log("Valid Solar System Config.");
+            if (sun.HasNode("CelestialBody") && sun.HasNode("Orbit"))
             {
-                if (star.GetNode("CelestialBody").HasValue("name") &&
-                    star.GetNode("CelestialBody").HasValue("flightGlobalIndex") &&
-                    star.GetNode("Orbit").HasValue("semiMajorAxis"))
+
+                Debug.Log("Keys Found For Sun.");
+                if (sun.GetNode("CelestialBody").HasValue("name") &&
+                    sun.GetNode("CelestialBody").HasValue("flightGlobalIndex") &&
+                    sun.GetNode("Orbit").HasValue("semiMajorAxis"))
                 {
+
+                    Debug.Log("Values in the keys Found For Sun.");
                     int flightGlobalIndex;
                     double semiMajorAxis;
-                    bool isflightGlobalIndexValueValid = int.TryParse(star.GetNode("CelestialBody").GetValue("flightGlobalIndex"), out flightGlobalIndex);
-                    bool issemiMajorAxisValueValid = double.TryParse(star.GetNode("Orbit").GetValue("semiMajorAxis"), out semiMajorAxis);
+                    bool isflightGlobalIndexValueValid = int.TryParse(sun.GetNode("CelestialBody").GetValue("flightGlobalIndex"), out flightGlobalIndex);
+                    bool issemiMajorAxisValueValid = double.TryParse(sun.GetNode("Orbit").GetValue("semiMajorAxis"), out semiMajorAxis);
                     if (isflightGlobalIndexValueValid && issemiMajorAxisValueValid &&
-                        star.GetNode("CelestialBody").GetValue("name") != "")
+                        sun.GetNode("CelestialBody").GetValue("name") != "")
                     {
+                        Debug.Log("All Good");
                         returnValue = true;
                     }
                 }
@@ -225,19 +235,29 @@ namespace StarSystems.Utils
             system_config_valid = false;
             if (configname == "")
             {
+
+
+                Debug.Log("No Config File listed");
                 return false;
             }
             system_config = ConfigNode.Load(string.Format("GameData/StarSystems/Config/{0}.cfg",configname));
+            Debug.Log(system_config);
+            Debug.Log(string.Format("Config Loading. GameData/StarSystems/Config/{0}.cfg", configname));
             if (!system_config.HasData)
             {
+                Debug.Log("Config Has No Data");
                 return false;
             }
             Debug.Log("Valid star configs.");
             if (system_config.HasNode("KSPSystem"))
             {
-                if (system_config.HasNode("Kerbol") && system_config.HasNode("Root") && system_config.HasNode("StarSystems"))
+                Debug.Log("Found Master Node.");
+                if (system_config.GetNode("KSPSystem").HasNode("Kerbol") && system_config.GetNode("KSPSystem").HasNode("Root") && system_config.GetNode("KSPSystem").HasNode("StarSystems"))
                 {
-                    ConfigNode[] stars = system_config.GetNode("StarSystems").GetNodes("StarSystem");
+
+                    Debug.Log("Checking for number systems is it 0 mod will close");
+                    ConfigNode[] stars = system_config.GetNode("KSPSystem").GetNode("StarSystems").GetNodes("StarSystem");
+                    Debug.Log(string.Format("Number of Solar System Found {0}", stars.Count()));
                     if (stars.Count() != 0)
                     {
                         system_config_valid = true;
