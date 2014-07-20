@@ -64,7 +64,7 @@ namespace StarSystems
                     Kerbol.Epoch = 0;
                     Kerbol.Mass = 1.7565670E28;
                     Kerbol.Radius = 261600000d;
-                    Kerbol.FlightGlobalsIndex = 0;
+                    Kerbol.FlightGlobalsIndex = 200;
                     Kerbol.StarColor = PlanetColor.Yellow;
                     Kerbol.ScienceMultiplier = 1f;
                     Kerbol.OrignalStar = true;
@@ -107,7 +107,6 @@ namespace StarSystems
                             StarDict.Add(star.Name, new Star(star, InternalStarPSB, InternalSunPSB));
                         }
 
-                        PSystemManager.Instance.systemPrefab.rootBody.flightGlobalsIndex = -1;
 
                         Debug.Log("Basis for new stars created");
 
