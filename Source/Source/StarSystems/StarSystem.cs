@@ -64,7 +64,6 @@ namespace StarSystems
             }
             else
             {
-
                 //kill the mod for bad config
                 Debug.Log("Config for ksp Mod stoped working");
                 kspSystemDefinition = null;

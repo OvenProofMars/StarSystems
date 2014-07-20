@@ -32,7 +32,7 @@ namespace StarSystems.Utils
 
         public KspSystemDefinition GetConfigData()
         {
-            KspSystemDefinition kspSystemInfo;
+            KspSystemDefinition kspSystemDefinition;
             if (system_config == null)
             {
                 return null;
@@ -46,7 +46,7 @@ namespace StarSystems.Utils
                 else
                 {
                     ConfigNode kspNode = system_config.GetNode("KSPSystem");
-                    RootDefinition sunInfo;
+                    RootDefinition rootDefinition;
                     double sun_solar_mass;
                     SunType sun_solar_type;
                     try
@@ -65,20 +65,20 @@ namespace StarSystems.Utils
                     {
                         sun_solar_type = SunType.Blackhole;
                     }
-                    sunInfo = new RootDefinition(sun_solar_mass, sun_solar_type);
+                    rootDefinition = new RootDefinition(sun_solar_mass, sun_solar_type);
                     try
                     {
-                        kspSystemInfo = new KspSystemDefinition(sunInfo,
+                        kspSystemDefinition = new KspSystemDefinition(rootDefinition,
                             double.Parse(kspNode.GetNode("Kerbol").GetValue("semiMajorAxis")));
                     }
                     catch
                     {
-                        kspSystemInfo = new KspSystemDefinition(sunInfo, 4500000000000);
+                        kspSystemDefinition = new KspSystemDefinition(rootDefinition, 4500000000000);
                     }
-                    kspSystemInfo.Stars = getStars(kspNode.GetNode("StarSystems").GetNodes("StarSystem"));
+                    kspSystemDefinition.Stars = getStars(kspNode.GetNode("StarSystems").GetNodes("StarSystem"));
                 }
             }
-            return kspSystemInfo;
+            return kspSystemDefinition;
 
         }
         List<StarSystemDefintion> getStars(ConfigNode[] stars_config)
