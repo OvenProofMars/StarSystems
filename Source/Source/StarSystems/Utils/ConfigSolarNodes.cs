@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using StarSystems.Data;
 using UnityEngine;
 
-namespace StarSystems
+namespace StarSystems.Utils
 {
     public class ConfigSolarNodes
     {

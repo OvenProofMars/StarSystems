@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StarSystems
+namespace StarSystems.Utils
 {
     /// <summary>
     /// Provides a description for an enumerated type.
