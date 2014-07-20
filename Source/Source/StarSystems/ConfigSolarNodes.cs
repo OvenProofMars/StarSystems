@@ -84,16 +84,118 @@ namespace StarSystems
         List<StarInfo> getStars(ConfigNode[] stars_config)
         {
             List<StarInfo> returnValue = new List<StarInfo>();
-
             //Grab star info
             foreach (var star in stars_config)
             {
                 if (IsStarValid(star))
                 {
-                    
+                    StarInfo starInfo = new StarInfo();
+
+                    starInfo.name = star.GetNode("CelestialBody").GetValue("name");
+                    starInfo.FlightGlobalsIndex = int.Parse(star.GetNode("CelestialBody").GetValue("flightGlobalIndex"));
+                    starInfo.SemiMajorAxis = double.Parse(star.GetNode("Orbit").GetValue("semiMajorAxis"));
+                    try
+                    {
+                        starInfo.BodyDescription = star.GetNode("CelestialBody").GetValue("BodyDescription");
+                    }
+                    catch (Exception e)
+                    {
+                    }
+
+                    try
+                    {
+                        starInfo.Radius = double.Parse(star.GetNode("CelestialBody").GetValue("Radius"));
+                    }
+                    catch (Exception e)
+                    {
+                        starInfo.Radius = 261600000;
+                    }
+                    try
+                    {
+                        starInfo.StarColor =
+                            (PlanetColor)
+                                EnumUtilities.Parse(typeof (PlanetColor),
+                                    star.GetNode("CelestialBody").GetValue("StarColor"));
+                    }
+                    catch (Exception e)
+                    {
+                        starInfo.StarColor = PlanetColor.Yellow;
+                    }
+                    try
+                    {
+                        starInfo.Mass = double.Parse(star.GetNode("CelestialBody").GetValue("Mass"));
+                    }
+                    catch (Exception e)
+                    {
+                        starInfo.Mass = 1.7565670E28;
+                    }
+                    try
+                    {
+                        starInfo.ScienceMultiplier =
+                            float.Parse(star.GetNode("CelestialBody").GetValue("ScienceMultiplier"));
+                    }
+                    catch (Exception e)
+                    {
+                        starInfo.ScienceMultiplier = 10f;
+                    }
+                    try
+                    {
+                        starInfo.inclination = double.Parse(star.GetNode("Orbit").GetValue("inclination"));
+                    }
+                    catch (Exception e)
+                    {
+                        starInfo.inclination = 0;
+                    }
+                    try
+                    {
+                        starInfo.eccentricity = double.Parse(star.GetNode("Orbit").GetValue("eccentricity"));
+                    }
+                    catch (Exception e)
+                    {
+                        starInfo.eccentricity = 0;
+                    }
+                    try
+                    {
+                        starInfo.LAN = double.Parse(star.GetNode("Orbit").GetValue("LAN"));
+                    }
+                    catch (Exception e)
+                    {
+                        starInfo.LAN = 0;
+                    }
+                    try
+                    {
+                        starInfo.argumentOfPeriapsis =
+                            double.Parse(star.GetNode("Orbit").GetValue("argumentOfPeriapsis"));
+                    }
+                    catch (Exception e)
+                    {
+                        starInfo.LAN = 0;
+                    }
+                    try
+                    {
+                        starInfo.meanAnomalyAtEpoch = double.Parse(star.GetNode("Orbit").GetValue("meanAnomalyAtEpoch"));
+                    }
+                    catch (Exception e)
+                    {
+                        starInfo.meanAnomalyAtEpoch = 0;
+                    }
+                    try
+                    {
+                        starInfo.epoch = double.Parse(star.GetNode("Orbit").GetValue("epoch"));
+                    }
+                    catch (Exception e)
+                    {
+                        starInfo.epoch = 0;
+                    }
+                    returnValue.Add(starInfo);
+                }
+                else
+                {
+                    Debug.Log("Star Unable be create lack requrement fields: CelestialBody/name,CelestialBody/flightGlobalIndex,Orbit/semiMajorAxis");
+                    continue;
                 }
             }
-            return null;
+            return returnValue;
         }
 
         bool IsStarValid(ConfigNode star)

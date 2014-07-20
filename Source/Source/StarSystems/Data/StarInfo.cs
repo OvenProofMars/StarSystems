@@ -8,7 +8,7 @@ namespace StarSystems.Data
 {
     public class StarInfo
     {
-        public StarInfo(string Name, string BodyDescription, string StarColor, double Inclination, double Eccentricity, double SemiMajorAxis, double LAN, double ArgumentOfPeriapsis, double MeanAnomalyAtEpoch, double Epoch, double Mass, double Radius, int FlightGlobalsIndex, float ScienceMultiplier)
+        public StarInfo(string Name, string BodyDescription, PlanetColor StarColor, double Inclination, double Eccentricity, double SemiMajorAxis, double LAN, double ArgumentOfPeriapsis, double MeanAnomalyAtEpoch, double Epoch, double Mass, double Radius, int FlightGlobalsIndex, float ScienceMultiplier)
         {
             this.Name = Name;
             this.BodyDescription = BodyDescription;
@@ -31,7 +31,7 @@ namespace StarSystems.Data
         }
         public string Name { get; set; }
         public string BodyDescription { get; set; }
-        public string StarColor { get; set; }
+        public PlanetColor StarColor { get; set; }
         public double Inclination { get; set; }
         public double Eccentricity { get; set; }
         public double SemiMajorAxis { get; set; }

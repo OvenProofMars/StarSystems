@@ -11,4 +11,15 @@ namespace StarSystems.Data
         Blackhole = 0,
         Sun = 1
     }
+
+    public enum PlanetColor
+    {
+        [EnumDescriptionAttribute("Blue")]
+        Blue,
+        [EnumDescriptionAttribute("Red")]
+        Red,
+        [EnumDescriptionAttribute("Yellow")]
+        Yellow
+    }
+
 }
