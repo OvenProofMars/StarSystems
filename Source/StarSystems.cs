@@ -20,6 +20,7 @@ namespace StarSystems
         public double argumentOfPeriapsis;
         public double meanAnomalyAtEpoch;
         public double epoch;
+        public Color orbitColor;
 
         public double Mass;
         public double Radius;
@@ -175,6 +176,15 @@ namespace StarSystems
                 {
                     StarClass.epoch = 0;
                 }
+                try
+                {
+                    StarClass.orbitColor = ConfigNode.ParseColor(star.GetNode("Orbit").GetValue("orbitColor").Replace("(", "").Replace(")", ""));
+                }
+                catch (Exception e)
+                {
+                    //StarClass.orbitColor = new Color(0.5f,0.5f,0.5f,1f);
+                    Debug.Log("No orbit color found, using default");
+                }				
 
                 StarDict[StarClass.name] = StarClass;
             }
@@ -197,6 +207,15 @@ namespace StarSystems
             Kerbol.argumentOfPeriapsis = 0;
             Kerbol.meanAnomalyAtEpoch = 0;
             Kerbol.epoch = 0;
+            try
+            {
+                Kerbol.orbitColor = ConfigNode.ParseColor(ConfigNode.Load("GameData/StarSystems/Configdata/StarNames.cfg").GetNode("Kerbol").GetValue("orbitColor").Replace("(", "").Replace(")", ""));
+            }
+            catch
+            {
+                //Kerbol.orbitColor = new Color(1f, 1f, 0f, 1f);
+                Debug.Log("No orbit color found, using default");
+            }
 
             Kerbol.Mass = 1.7565670E28;
             Kerbol.Radius = 261600000d;
@@ -378,6 +397,12 @@ namespace StarSystems
 
             //Create new orbit
             LocalStarCB.orbitDriver.orbit = new Orbit(Star.inclination, Star.eccentricity, Star.semiMajorAxis, Star.LAN, Star.argumentOfPeriapsis, Star.meanAnomalyAtEpoch, Star.epoch, LocalSunCB);
+
+            //Change color of the orbit
+            if (Star.orbitColor != null)
+            {
+                LocalStarCB.orbitDriver.orbitColor = Star.orbitColor;
+            }
 
             //Calculate SOI
             LocalStarCB.sphereOfInfluence = (LocalStarCB.orbit.semiMajorAxis * Math.Pow(LocalStarCB.Mass / LocalStarCB.orbit.referenceBody.Mass, (2.0 / 5)));
