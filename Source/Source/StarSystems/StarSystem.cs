@@ -15,9 +15,10 @@ namespace StarSystems
     {
         public static Dictionary<string, CelestialBody> CBDict = new Dictionary<string, CelestialBody>();
         public static Dictionary<string, Transform> TFDict = new Dictionary<string, Transform>();
+        public static Dictionary<string, PSystemBody> PSBDict = new Dictionary<string, PSystemBody>();
         private static Dictionary<string, Star> StarDict = new Dictionary<string, Star>();
 
-        private static List<string> StandardPlanets = new List<string>
+        public static List<string> StandardPlanets = new List<string>
         {
             "Moho",
             "Eve",
@@ -95,6 +96,8 @@ namespace StarSystems
                         PlanetariumCamera.fetch.maxDistance = 5000000000;
                         Debug.Log("Creating basis for new stars...");
 
+                        PSystemBodies.GrabPSystemBodies(PSystemManager.Instance.systemPrefab.rootBody);
+
                         //Create base for new stars
                         foreach (StarSystemDefintion star in kspSystemDefinition.Stars)
                         {
@@ -105,10 +108,14 @@ namespace StarSystems
                             //Instantiate Sun Internal PSystemBody
                             var InternalStarPSB = (PSystemBody)Instantiate(InternalSunPSB);
                             StarDict.Add(star.Name, new Star(star, InternalStarPSB, InternalSunPSB));
+                            PSBDict[InternalStarPSB.celestialBody.bodyName] = InternalStarPSB;
+
                         }
 
 
                         Debug.Log("Basis for new stars created");
+
+                        //Planet.CreatePlanet("Duna", "DunaClone", "Dolas", 300, 50000000);
 
                         //PsystemReady trigger
                         PSystemManager.Instance.OnPSystemReady.Add(OnPSystemReady);
@@ -143,28 +150,7 @@ namespace StarSystems
                 TFDict[ScaledPlanet.name] = ScaledPlanet;
             }
 
-            Debug.Log("Moving standard planets...");
-
-            //Add all standard planets to Kerbol
-            foreach (var OriginalPlanet in StandardPlanets)
-            {
-                foreach (var PlanetCB in CBDict.Values)
-                {
-                    if (PlanetCB.name == OriginalPlanet)
-                    {
-                        PlanetCB.orbitDriver.referenceBody = CBDict["Kerbol"];
-
-                        CBDict["Kerbol"].orbitingBodies.Add(PlanetCB);
-                        PlanetCB.orbitDriver.UpdateOrbit();
-
-                        break;
-                    }
-                }
-            }
-
-            CBDict["Kerbol"].CBUpdate();
-
-            Debug.Log("Standard planets moved");
+            
 
 
             CenterRoot.Instance.OnPSystemReady(kspSystemDefinition.Root, CBDict["Sun"], TFDict["Sun"]);

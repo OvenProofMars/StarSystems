@@ -17,28 +17,34 @@ namespace StarSystems
         /// </summary>
         void Update()
         {
-            if (HighLogic.LoadedScene == GameScenes.TRACKSTATION && StarSystem.Initialized == false)
+            if (HighLogic.LoadedScene == GameScenes.TRACKSTATION || HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
-                //Update the orbitdrivers
-                foreach (OrbitDriver orb in Planetarium.Orbits)
+                if (StarSystem.Initialized == false)
                 {
-                    orb.UpdateOrbit();
-                }
-
-                //Incase a vessel get lost, reload it
-                foreach (ProtoVessel Pves in HighLogic.CurrentGame.flightState.protoVessels)
-                {
-                    if (Pves.vesselRef == null)
+                    Debug.Log("Moving standard planets...");
+                    //Add all standard planets to Kerbol
+                    foreach (var OriginalPlanet in StarSystem.StandardPlanets)
                     {
-                        Pves.Load(HighLogic.CurrentGame.flightState);
-                    }
-                }
-            }
+                        foreach (var PlanetCB in StarSystem.CBDict.Values)
+                        {
+                            if (PlanetCB.name == OriginalPlanet)
+                            {
+                                PlanetCB.orbitDriver.referenceBody = StarSystem.CBDict["Kerbol"];
+                                StarSystem.CBDict["Sun"].orbitingBodies.Remove(PlanetCB);
+                                StarSystem.CBDict["Kerbol"].orbitingBodies.Add(PlanetCB);
+                                PlanetCB.orbitDriver.UpdateOrbit();
 
-            //Once a flight has been started vessels wont crash into planets anymore....I hope.....
-            if (HighLogic.LoadedScene == GameScenes.FLIGHT && StarSystem.Initialized == false)
-            {
-                StarSystem.Initialized = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    StarSystem.CBDict["Kerbol"].CBUpdate();
+
+                    Debug.Log("Standard planets moved");
+
+                    StarSystem.Initialized = true;
+                }
             }
         }
     }
