@@ -7,7 +7,7 @@ using System.Xml.Serialization;
 using UnityEngine;
 using System.Text;
 
-namespace StarSystems
+namespace StarSystems.Fixes
 {
     ///Navballfixer fixes the navball when in interstellar space
     public class NavBallFixer : MonoBehaviour

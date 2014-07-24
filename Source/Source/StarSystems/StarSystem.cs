@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using StarSystems.Creator;
 using StarSystems.Data;
 using StarSystems.Utils;
+using StarSystems.Fixes;
 using UnityEngine;
 
 namespace StarSystems
@@ -32,6 +33,7 @@ namespace StarSystems
         private ConfigNode StarNames;
         private KspSystemDefinition kspSystemDefinition;
         public static bool Initialized = false;
+        public static bool NeedsPatching = false;
 
         private void Awake()
         {
@@ -107,6 +109,7 @@ namespace StarSystems
 
                             //Instantiate Sun Internal PSystemBody
                             var InternalStarPSB = (PSystemBody)Instantiate(InternalSunPSB);
+                            DontDestroyOnLoad(InternalStarPSB);
                             StarDict.Add(star.Name, new Star(star, InternalStarPSB, InternalSunPSB));
                             PSBDict[InternalStarPSB.celestialBody.bodyName] = InternalStarPSB;
 
@@ -124,11 +127,12 @@ namespace StarSystems
                         break;
                     case 5://space center
                         //Set sun to Kerbol when loading space center
-                        Sun.Instance.sun = CBDict["Kerbol"];
-                        Planetarium.fetch.Sun = CBDict["Kerbol"];
                         break;
                     case 2://main menu
-                        Initialized = false;
+                        if (Initialized == true)
+                        {
+                            MoveStandardPlanets.MoveToSun();
+                        }
                         break;
                         
                 }
@@ -150,11 +154,7 @@ namespace StarSystems
                 TFDict[ScaledPlanet.name] = ScaledPlanet;
             }
 
-            
-
-
             CenterRoot.Instance.OnPSystemReady(kspSystemDefinition.Root, CBDict["Sun"], TFDict["Sun"]);
-
 
             //Build out stars
             foreach (var starDefinition in kspSystemDefinition.Stars)
@@ -189,10 +189,13 @@ namespace StarSystems
             Debug.Log("Navball fixer created");
 
             //Create Vessel fixer
-            var VesselFixerObj = new GameObject("SaveGameFixer", typeof (VesselFixer));
+            var VesselFixerObj = new GameObject("SaveGameFixer", typeof (GameFixer));
             GameObject.DontDestroyOnLoad(VesselFixerObj);
 
             Debug.Log("Vessel fixer created");
+
+            //var OrbitUpdater = new GameObject("OrbitUpdater", typeof(OrbitUpdater));
+            //GameObject.DontDestroyOnLoad(OrbitUpdater);
         }
     }
 }

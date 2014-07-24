@@ -39,9 +39,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fixes\OrbitUpdater.cs" />
+    <Compile Include="Fixes\NavBallFixer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Fixes\GameFixer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utils\MoveStandardPlanets.cs" />
     <Compile Include="Creator\Planet.cs" />
-    <Compile Include="PSystemBodies.cs" />
-    <Compile Include="SaveGameFixer.cs" />
+    <Compile Include="Utils\PSystemBodies.cs" />
     <Compile Include="Creator\CenterRoot.cs" />
     <Compile Include="Creator\Star.cs" />
     <Compile Include="Utils\ConfigSolarNodes.cs" />
@@ -50,12 +57,10 @@
     <Compile Include="Data\KspSystemDefinition.cs" />
     <Compile Include="Data\RootDefinition.cs" />
     <Compile Include="Utils\EnumUtilities.cs" />
-    <Compile Include="MeshScaler.cs" />
-    <Compile Include="NavBallFixer.cs" />
+    <Compile Include="Utils\MeshScaler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StarSystem.cs" />
     <Compile Include="Utils\StarLightSwitcher.cs" />
-    <Compile Include="VesselFixer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
@@ -71,6 +76,7 @@
     <None Include="Config\StarNames.cfg" />
     <None Include="Config\system.cfg" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace StarSystems
+namespace StarSystems.Utils
 {
     //Meshscaler
     public class MeshScaler : MonoBehaviour
